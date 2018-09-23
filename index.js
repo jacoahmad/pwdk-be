@@ -41,6 +41,7 @@ app.get('/blogs', (req, res) => {
     })
   })
 })
+
 /**
  * Find by Id
  */
@@ -58,6 +59,34 @@ app.get('/blog/:id', (req, res) => {
     }))
   })
 })
+
+/**
+ * Edit by ID
+ */
+app.put('/blog/:id', (req, res) => {
+  mongoClient.connect(dbURL, (err, db) => {
+
+    if(err) {
+      return res.json({
+        status: 'error',
+        error: err.message
+      })
+    }
+    const blogs = db.collection('blogs');
+    return blogs.updateOne({_id: ObjectId(req.params.id)}, {$set: {
+      ...req.body
+    }},(err, data) => {
+      if(err) {
+        return res.json({
+          status: 'error',
+          error: err.message
+        })
+      }
+      res.json(data)
+    })
+  })
+})
+
 /**
  * Post new blog
  */
