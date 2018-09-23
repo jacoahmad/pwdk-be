@@ -121,6 +121,13 @@ app.put('/blog/:id', (req, res) => {
  * Post new blog
  */
 app.post('/blog', (req, res) => {
+  const body = req.body;
+  if(!body.title || !body.subtitle || !body.text) {
+    return res.json({
+      status: 'error',
+      error: 'Title, subtitle or text cannot be empty'
+    })
+  }
   mongoClient.connect(dbURL, (err, db) => {
     if(err) {
       return res.json({
@@ -130,6 +137,7 @@ app.post('/blog', (req, res) => {
     }
     const blogs = db.collection('blogs');
     const data = {
+      active: true,
       ...req.body,
       date_updated: Date.now(),
       date_created: Date.now(),
