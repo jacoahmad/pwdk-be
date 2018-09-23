@@ -59,7 +59,37 @@ app.get('/blog/:id', (req, res) => {
     }))
   })
 })
-
+/**
+ * Delete by id
+ */
+app.post('/blog/delete', (req, res) => {
+  mongoClient.connect(dbURL, (err, db) => {
+    if(err) {
+      return res.json({
+        status: 'ERROR',
+        error: err.message
+      })
+    }
+    const blogs = db.collection('blogs');
+    if(!req.body.id) {
+      return res.json({
+        status: 'ERROR',
+        error: `Id is required`
+      })
+    }
+    return blogs.deleteOne({_id: ObjectId(req.body.id)}, (err, res) => {
+      if(err) {
+        return res.json({
+          status: 'ERROR',
+          error: err.message
+        })
+      }
+      return res.json({
+        res
+      })
+    })
+  })
+})
 /**
  * Edit by ID
  */
